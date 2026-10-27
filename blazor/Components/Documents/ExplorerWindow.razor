@@ -1,0 +1,59 @@
+@using MdiWorkbench.Models
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Layouts
+@using Syncfusion.Blazor.Navigations
+@inject ICatalogService CatalogService
+@inject IProductDataService ProductDataService
+
+<div class="document-window document-window-explorer">
+    <SfSplitter Height="100%" Width="100%">
+        <SplitterPanes>
+            <SplitterPane Size="220px" Min="150px">
+                <ContentTemplate>
+                    @if (_categories.Count > 0)
+                    {
+                        <SfTreeView TValue="CatalogNode">
+                            <TreeViewFieldsSettings TValue="CatalogNode" Id="Id" ParentID="ParentId" Text="Name" DataSource="@_categories">
+                            </TreeViewFieldsSettings>
+                            <TreeViewEvents TValue="CatalogNode" NodeSelected="OnCategorySelected"></TreeViewEvents>
+                        </SfTreeView>
+                    }
+                </ContentTemplate>
+            </SplitterPane>
+            <SplitterPane>
+                <ContentTemplate>
+                    @if (_products is not null)
+                    {
+                        <SfGrid DataSource="@_products" AllowSorting="true" Height="500" Width="700" AllowPaging="true">
+                            <GridPageSettings PageSize="10"></GridPageSettings>
+                            <GridColumns>
+                                <GridColumn Field="@nameof(Product.Name)" HeaderText="Name" Width="180"></GridColumn>
+                                <GridColumn Field="@nameof(Product.Category)" HeaderText="Category" Width="130"></GridColumn>
+                                <GridColumn Field="@nameof(Product.Price)" HeaderText="Price" Format="C2" Width="110"></GridColumn>
+                                <GridColumn Field="@nameof(Product.Stock)" HeaderText="Stock" Width="90"></GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    }
+                </ContentTemplate>
+            </SplitterPane>
+        </SplitterPanes>
+    </SfSplitter>
+</div>
+
+@code {
+    private List<CatalogNode> _categories = new();
+    private List<Product>? _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await CatalogService.GetCategoryTreeAsync();
+        _products = await ProductDataService.GetProductsAsync();
+    }
+
+    private async void OnCategorySelected(NodeSelectEventArgs args)
+    {
+        var node = _categories.FirstOrDefault(c => c.Id == args.NodeData.Id);
+        _products = await ProductDataService.GetProductsAsync(node?.CategoryKey);
+        StateHasChanged();
+    }
+}

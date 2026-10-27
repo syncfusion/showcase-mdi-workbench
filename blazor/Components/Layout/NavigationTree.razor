@@ -1,0 +1,137 @@
+@using MdiWorkbench.Components.Mdi
+@using MdiWorkbench.Models
+@using Syncfusion.Blazor.Navigations
+@inject MdiWindowManager Manager
+@inject ICatalogService CatalogService
+
+@if (_treeData.Count > 0)
+{
+    <SfTreeView TValue="NavTreeNode">
+        <TreeViewFieldsSettings TValue="NavTreeNode" Id="Id" Text="Text" Child="Child" DataSource="@_treeData">
+        </TreeViewFieldsSettings>
+        <TreeViewEvents TValue="NavTreeNode" NodeSelected="OnNodeSelected"></TreeViewEvents>
+    </SfTreeView>
+}
+
+@code {
+    private List<NavTreeNode> _treeData = new();
+    private readonly Dictionary<string, NavTreeNode> _nodesById = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var categories = await CatalogService.GetCategoryTreeAsync();
+        var categoryChildren = BuildCategoryNodes(categories, parentId: null);
+
+        _treeData = new List<NavTreeNode>
+        {
+            new NavTreeNode
+            {
+                Text = "Documents",
+                IconCss = "e-icons e-folder",
+                Child = new List<NavTreeNode>
+                {
+                    new NavTreeNode { Text = "PDF Reports", IconCss = "e-icons e-export-pdf", Action = "PdfViewer", DocumentPath = "https://cdn.syncfusion.com/content/pdf/pdf-succinctly.pdf" },
+                    new NavTreeNode { Text = "Spreadsheets", IconCss = "e-icons e-export-excel", Action = "Spreadsheet" },
+                }
+            },
+            new NavTreeNode
+            {
+                Text = "Data Grid",
+                IconCss = "e-icons e-folder",
+                Child = new List<NavTreeNode>
+                {
+                    new NavTreeNode { Text = "Explorer", IconCss = "e-icons e-folder", Action = "Explorer" },
+                    new NavTreeNode { Text = "All Products", IconCss = "e-icons e-grid-view", Action = "DataGrid" },
+                    new NavTreeNode { Text = "Browse Categories", IconCss = "e-icons e-folder", Child = categoryChildren }
+                }
+            },
+            new NavTreeNode
+            {
+                Text = "Reports",
+                IconCss = "e-icons e-folder",
+                Child = new List<NavTreeNode>
+                {
+                    new NavTreeNode { Text = "Sales Dashboard", IconCss = "e-icons e-chart", Action = "Dashboard" },
+                    new NavTreeNode { Text = "Live Sales Report", IconCss = "e-icons e-clock", Action = "LiveSalesReport" },
+                }
+            },
+        };
+
+        IndexNodes(_treeData);
+    }
+
+    private List<NavTreeNode> BuildCategoryNodes(List<CatalogNode> flat, string? parentId)
+    {
+        return flat
+            .Where(c => c.ParentId == parentId)
+            .Select(c => new NavTreeNode
+            {
+                Text = c.Name,
+                IconCss = c.IconCss,
+                Action = "DataGrid",
+                CategoryKey = c.CategoryKey,
+                Child = BuildCategoryNodes(flat, c.Id) is { Count: > 0 } kids ? kids : null
+            })
+            .ToList();
+    }
+
+    private void IndexNodes(IEnumerable<NavTreeNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            _nodesById[node.Id] = node;
+            if (node.Child is not null)
+            {
+                IndexNodes(node.Child);
+            }
+        }
+    }
+
+    private async Task OnNodeSelected(NodeSelectEventArgs args)
+    {
+        if (!_nodesById.TryGetValue(args.NodeData.Id, out var node) || node.Action is null)
+        {
+            return;
+        }
+
+        switch (node.Action)
+        {
+            case "Explorer":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Explorer, "Explorer");
+                break;
+            case "DataGrid":
+                var title = string.IsNullOrEmpty(node.CategoryKey) ? "Product Catalog" : $"Products \u2013 {node.Text}";
+                var parameters = string.IsNullOrEmpty(node.CategoryKey)
+                    ? null
+                    : new Dictionary<string, string> { ["categoryKey"] = node.CategoryKey };
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.DataGrid, title, parameters);
+                break;
+            case "PdfViewer":
+                var pdfParams = string.IsNullOrEmpty(node.DocumentPath)
+                    ? null
+                    : new Dictionary<string, string> { ["documentPath"] = node.DocumentPath };
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.PdfViewer, "PDF Viewer", pdfParams);
+                break;
+            case "Spreadsheet":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Spreadsheet, "Spreadsheet");
+                break;
+            case "Dashboard":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Dashboard, "Sales Dashboard", singleInstance: true);
+                break;
+            case "LiveSalesReport":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.LiveSalesReport, "Live Sales Report", singleInstance: true);
+                break;
+        }
+    }
+
+    private class NavTreeNode
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Text { get; set; } = string.Empty;
+        public string IconCss { get; set; } = "e-icons e-folder";
+        public List<NavTreeNode>? Child { get; set; }
+        public string? Action { get; set; }
+        public string? CategoryKey { get; set; }
+        public string? DocumentPath { get; set; }
+    }
+}

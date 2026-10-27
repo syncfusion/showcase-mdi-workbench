@@ -1,0 +1,37 @@
+@inject MdiWindowManager Manager
+@implements IDisposable
+
+<div class="mdi-taskbar">
+    <span class="mdi-taskbar-label">Windows:</span>
+    @if (Manager.Windows.Count == 0)
+    {
+        <span class="mdi-taskbar-empty">No open windows</span>
+    }
+    else
+    {
+        @foreach (var window in Manager.Windows)
+        {
+            <button type="button"
+                    class="mdi-taskbar-chip @(window.IsMinimized ? "mdi-taskbar-chip-minimized" : "mdi-taskbar-chip-active")"
+                    @onclick="() => OnChipClicked(window.Id)">
+                @window.Title
+            </button>
+        }
+    }
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Manager.WindowsChanged += OnWindowsChanged;
+    }
+
+    private void OnChipClicked(Guid id) => Manager.Activate(id);
+
+    private async void OnWindowsChanged() => await InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        Manager.WindowsChanged -= OnWindowsChanged;
+    }
+}

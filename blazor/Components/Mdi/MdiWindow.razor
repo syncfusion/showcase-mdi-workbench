@@ -1,0 +1,264 @@
+@using MdiWorkbench.Components.Documents
+@using MdiWorkbench.Components.Mdi
+@using MdiWorkbench.Models
+@using Microsoft.JSInterop
+@using Syncfusion.Blazor.Popups
+@inject IJSRuntime JsRuntime
+
+<SfDialog @ref="_dialog"
+          ID="@ElementId"
+          Target="#mdi-workspace"
+          Visible="@(!Window.IsMinimized)"
+          IsModal="false"
+          ShowCloseIcon="false"
+          AllowDragging="true"
+          EnableResize="@(!Window.IsMaximized)"
+          MinHeight="220px"
+          Width="@($"{Window.Width}px")"
+          Height="@($"{Window.Height}px")"
+          ZIndex="@Window.ZIndex"
+          CssClass="@DialogCssClass">
+    <DialogTemplates>
+        <Header>
+            <div class="mdi-window-header" @onmousedown="ActivateAsync">
+
+                <span class="mdi-window-title">@Window.Title</span>
+
+                <div class="mdi-window-controls">
+
+                    <button type="button"
+                            class="mdi-window-btn"
+                            title="Minimize"
+                            aria-label="Minimize"
+                            @onclick="MinimizeAsync" @onclick:stopPropagation="true">
+                        <span class="e-icons e-horizontal-line" aria-hidden="true"></span>
+                    </button>
+
+                    <button type="button"
+                            class="mdi-window-btn"
+                            title="@(Window.IsMaximized ? "Restore" : "Maximize")"
+                            aria-label="@(Window.IsMaximized ? "Restore" : "Maximize")"
+                            @onclick="ToggleMaximizeAsync" @onclick:stopPropagation="true">
+                        <span class="e-icons @(Window.IsMaximized ? "e-exit-full-screen" : "e-full-screen")" aria-hidden="true"></span>
+                    </button>
+
+                    <button type="button"
+                            class="mdi-window-btn mdi-window-btn-close"
+                            title="Close"
+                            aria-label="Close"
+                            @onclick="CloseAsync" @onclick:stopPropagation="true">
+                        <span class="e-icons e-close" aria-hidden="true"></span>
+                    </button>
+
+                </div>
+            </div>
+
+        </Header>
+        <Content>
+            <div class="mdi-window-content mdi-window-content-@Window.DocumentType.ToString().ToLowerInvariant()"
+                 @onmousedown="ActivateAsync">
+                @switch (Window.DocumentType)
+                {
+                    case MdiDocumentType.Explorer:
+                        <ExplorerWindow />
+                        break;
+                    case MdiDocumentType.DataGrid:
+                        <DataGridWindow CategoryKey="@GetParam("categoryKey")" />
+                        break;
+                    case MdiDocumentType.PdfViewer:
+                        <PdfViewerWindow />
+                        break;
+                    case MdiDocumentType.Spreadsheet:
+                        <SpreadsheetWindow />
+                        break;
+                    case MdiDocumentType.Dashboard:
+                        <DashboardWindow />
+                        break;
+                    case MdiDocumentType.LiveSalesReport:
+                        <LiveSalesReportWindow />
+                        break;
+                }
+            </div>
+        </Content>
+    </DialogTemplates>
+    <DialogEvents OnDragStop="OnDragStopAsync" OnResizeStop="OnResizeStopAsync" />
+</SfDialog>
+
+@code {
+    [Parameter, EditorRequired] public MdiWindowState Window { get; set; } = null!;
+    [Parameter, EditorRequired] public MdiWindowManager Manager { get; set; } = null!;
+
+    private SfDialog? _dialog;
+    private bool _firstRenderReported;
+    private int _lastReportedMinimizedRender;
+    private int _renderSequence;
+    private double _lastAppliedWidth;
+    private double _lastAppliedHeight;
+    private double _lastAppliedLeft;
+    private double _lastAppliedTop;
+    private bool _lastAppliedMaximized;
+    private bool _lastAppliedMinimized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_firstRenderReported)
+        {
+            _firstRenderReported = true;
+            _lastAppliedWidth = Window.Width;
+            _lastAppliedHeight = Window.Height;
+            _lastAppliedLeft = Window.Left;
+            _lastAppliedTop = Window.Top;
+            _lastAppliedMaximized = Window.IsMaximized;
+            _lastAppliedMinimized = Window.IsMinimized;
+
+            Manager.MarkFirstRenderComplete(Window.Id);
+        }
+        else if (!firstRender)
+        {
+
+            if (!_firstRenderReported)
+            {
+                _firstRenderReported = true;
+                _lastAppliedWidth = Window.Width;
+                _lastAppliedHeight = Window.Height;
+                _lastAppliedLeft = Window.Left;
+                _lastAppliedTop = Window.Top;
+                _lastAppliedMaximized = Window.IsMaximized;
+                _lastAppliedMinimized = Window.IsMinimized;
+                Manager.MarkFirstRenderComplete(Window.Id);
+            }
+            // Track the most recent render that observed a minimized state so callers can
+            // tell when un-minimize has been observed by the DOM.
+            if (Window.IsMinimized)
+            {
+                _lastReportedMinimizedRender = _renderSequence;
+            }
+        }
+
+        if (_firstRenderReported &&
+            _dialog is not null &&
+            (Window.Width != _lastAppliedWidth ||
+             Window.Height != _lastAppliedHeight ||
+             Window.Left != _lastAppliedLeft ||
+             Window.Top != _lastAppliedTop ||
+             Window.IsMaximized != _lastAppliedMaximized ||
+             Window.IsMinimized != _lastAppliedMinimized))
+        {
+            _lastAppliedWidth = Window.Width;
+            _lastAppliedHeight = Window.Height;
+            _lastAppliedLeft = Window.Left;
+            _lastAppliedTop = Window.Top;
+            _lastAppliedMaximized = Window.IsMaximized;
+            _lastAppliedMinimized = Window.IsMinimized;
+            try
+            {
+                await _dialog.RefreshPositionAsync();
+            }
+            catch (JSException)
+            {
+                // SfDialog not fully initialized yet — will retry on the next render.
+            }
+
+            // SfDialog applies ZIndex only at initial render, so keep the DOM in sync
+            // manually whenever the stacking order changes (activate/maximize).
+            try
+            {
+                await JsRuntime.InvokeVoidAsync("mdiWorkspace.setZIndex", ElementId, Window.ZIndex);
+            }
+            catch (JSException)
+            {
+                // Best-effort.
+            }
+        }
+
+        if (_firstRenderReported && _dialog is not null && !Window.IsMinimized)
+        {
+            try
+            {
+                await JsRuntime.InvokeVoidAsync(
+                    "mdiWorkspace.setBounds",
+                    ElementId,
+                    Window.Left,
+                    Window.Top);
+            }
+            catch (JSException)
+            {
+                // Element not mounted yet — will be retried on the next render.
+            }
+            catch (InvalidOperationException)
+            {
+                // JsRuntime not available during prerender — ignore.
+            }
+        }
+
+        _renderSequence++;
+        await Task.CompletedTask;
+    }
+
+    private string ElementId => $"mdi-window-{Window.Id}";
+
+    private string DialogCssClass
+    {
+        get
+        {
+            var docTypeClass = Window.DocumentType switch
+            {
+                MdiDocumentType.Dashboard => "mdi-window mdi-window-dashboard-doc",
+                MdiDocumentType.LiveSalesReport => "mdi-window mdi-window-live-sales-doc",
+                MdiDocumentType.DataGrid => "mdi-window mdi-window-grid-doc",
+                MdiDocumentType.Explorer => "mdi-window mdi-window-explorer-doc",
+                _ => "mdi-window",
+            };
+
+            // Add a minimized-state class so CSS can hide the pane without unmounting SfDialog.
+            return docTypeClass;
+        }
+    }
+
+    private string? GetParam(string key) => Window.Parameters.TryGetValue(key, out var value) ? value : null;
+    private Task ActivateAsync()
+    {
+        Manager.Activate(Window.Id);
+        return Task.CompletedTask;
+    }
+
+    private Task MinimizeAsync()
+    {
+        Manager.Minimize(Window.Id);
+        return Task.CompletedTask;
+    }
+
+    private Task ToggleMaximizeAsync()
+    {
+        Manager.ToggleMaximize(Window.Id);
+        return Task.CompletedTask;
+    }
+
+    private Task CloseAsync()
+    {
+        Manager.Close(Window.Id);
+        return Task.CompletedTask;
+    }
+
+    private async Task OnDragStopAsync(DragStopEventArgs args) => await SyncBoundsFromDomAsync();
+
+    private async Task OnResizeStopAsync(Microsoft.AspNetCore.Components.Web.MouseEventArgs args) => await SyncBoundsFromDomAsync();
+
+    private async Task SyncBoundsFromDomAsync()
+    {
+        try
+        {
+            var bounds = await JsRuntime.InvokeAsync<WindowBounds>("mdiWorkspace.getBounds", ElementId);
+            if (bounds.Width > 0 && bounds.Height > 0)
+            {
+                Manager.UpdateBounds(Window.Id, bounds.Left, bounds.Top, bounds.Width, bounds.Height);
+            }
+        }
+        catch (JSException)
+        {
+            // Ignore transient DOM lookup failures (e.g. window closed mid-interaction).
+        }
+    }
+
+    private record WindowBounds(double Left, double Top, double Width, double Height);
+}

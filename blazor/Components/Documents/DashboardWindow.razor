@@ -1,0 +1,267 @@
+@using MdiWorkbench.Models
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Grids
+<div class="document-window document-window-dashboard">
+
+        <div class="demo-dashboard-header">
+            <div class="demo-dashboard-title">
+                <h2 id="sales-dashboard-title">Sales Performance</h2>
+                <p>Overview of revenue, orders, and product mix.</p>
+            </div>
+          
+        </div>
+
+        <section class="dashboard-grid row g-3" aria-labelledby="sales-dashboard-title">
+
+                @* ── Row 0: KPI cards ─────────────────────────────────────── *@
+                <article class="dashboard-panel dashboard-kpi col-12 col-sm-6 col-xl-3">
+                    <div class="dashboard-panel-header">Revenue</div>
+                    <div class="dashboard-panel-body">
+                        <div class="kpi-value">@_summary.TotalRevenue.ToString("C0")</div>
+                        <div class="kpi-sub">YTD</div>
+                        <div class="demo-kpi-foot">
+                            <span class="demo-trend @(_summary.RevenueDeltaPercent >= 0 ? "demo-trend-up" : "demo-trend-down")">
+                                @(_summary.RevenueDeltaPercent >= 0 ? "▲" : "▼") @Math.Abs(_summary.RevenueDeltaPercent).ToString("0.0")%
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-kpi col-12 col-sm-6 col-xl-3">
+                    <div class="dashboard-panel-header">Orders</div>
+                    <div class="dashboard-panel-body">
+                        <div class="kpi-value">@_summary.TotalOrders.ToString("N0")</div>
+                        <div class="kpi-sub">this year</div>
+                        <div class="demo-kpi-foot">
+                            <span class="demo-trend @(_summary.OrdersDeltaPercent >= 0 ? "demo-trend-up" : "demo-trend-down")">
+                                @(_summary.OrdersDeltaPercent >= 0 ? "▲" : "▼") @Math.Abs(_summary.OrdersDeltaPercent).ToString("0.0")%
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-kpi col-12 col-sm-6 col-xl-3">
+                    <div class="dashboard-panel-header">Active Users</div>
+                    <div class="dashboard-panel-body">
+                        <div class="kpi-value">@_summary.ActiveUsers.ToString("N0")</div>
+                        <div class="kpi-sub">last 30 days</div>
+                        <div class="demo-kpi-foot">
+                            <span class="demo-trend @(_summary.UsersDeltaPercent >= 0 ? "demo-trend-up" : "demo-trend-down")">
+                                @(_summary.UsersDeltaPercent >= 0 ? "▲" : "▼") @Math.Abs(_summary.UsersDeltaPercent).ToString("0.0")%
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-kpi col-12 col-sm-6 col-xl-3">
+                    <div class="dashboard-panel-header">Conversion</div>
+                    <div class="dashboard-panel-body">
+                        <div class="kpi-value">@_summary.ConversionRatePercent.ToString("0.00")%</div>
+                        <div class="kpi-sub">site-wide</div>
+                        <div class="demo-kpi-foot">
+                            <span class="demo-trend @(_summary.ConversionDeltaPercent >= 0 ? "demo-trend-up" : "demo-trend-down")">
+                                @(_summary.ConversionDeltaPercent >= 0 ? "▲" : "▼") @Math.Abs(_summary.ConversionDeltaPercent).ToString("0.00")%
+                            </span>
+                        </div>
+                    </div>
+                </article>
+
+                @* ── Rows 1–2: Monthly Revenue + Daily Orders ──────────────── *@
+                <article class="dashboard-panel dashboard-chart col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Monthly Revenue</div>
+                    <div class="dashboard-panel-body">
+                        <SfChart Title="">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                            <ChartPrimaryYAxis Title="USD" Format="C0"></ChartPrimaryYAxis>
+                            <ChartTooltipSettings Enable="true" Format="C0"></ChartTooltipSettings>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@_monthlyRevenue" XName="Label" YName="Value"
+                                             Name="Revenue" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Column"
+                                             Fill="#5b8def" ColumnSpacing="0.25">
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-chart col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Daily Orders (this week)</div>
+                    <div class="dashboard-panel-body">
+                        <SfChart Title="">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                            <ChartPrimaryYAxis Title="Orders"></ChartPrimaryYAxis>
+                            <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@_dailyOrders" XName="Label" YName="Value"
+                                             Name="Orders" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Line"
+                                             Fill="#22c55e" Width="3">
+                                    <ChartMarker Visible="true" Width="8" Height="8" Fill="#22c55e"></ChartMarker>
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    </div>
+                </article>
+
+                @* ── Row 3: pies ───────────────────────────────────────────── *@
+                <article class="dashboard-panel dashboard-pie col-12 col-lg-6">
+                    <div class="dashboard-panel-header">By Category</div>
+                    <div class="dashboard-panel-body">
+                        <SfAccumulationChart Title="" Width="250px" Height="250px">
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries DataSource="@_categoryBreakdown" XName="Label" YName="Value"
+                                                         Name="Share"
+                                                         Type="Syncfusion.Blazor.Charts.AccumulationType.Pie"
+                                                        >
+                                </AccumulationChartSeries>
+                            </AccumulationChartSeriesCollection>
+                            <AccumulationChartLegendSettings Visible="true" Position="LegendPosition.Bottom"></AccumulationChartLegendSettings>
+                        </SfAccumulationChart>
+                    </div>
+                </article>
+
+                @* ── Rows 4–5: Revenue vs Orders + Top Products ─────────────── *@
+                <article class="dashboard-panel dashboard-chart col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Revenue vs Orders (by quarter)</div>
+                    <div class="dashboard-panel-body">
+                        <SfChart Title="">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                            <ChartPrimaryYAxis Title="USD" Format="C0"></ChartPrimaryYAxis>
+                            <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+                            <ChartLegendSettings Visible="true" Position="LegendPosition.Bottom"></ChartLegendSettings>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@_revenueVsOrders" XName="Label" YName="Value"
+                                             Name="Revenue" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Column"
+                                             Fill="#5b8def" ColumnSpacing="0.2">
+                                </ChartSeries>
+                                <ChartSeries DataSource="@_revenueVsOrders" XName="Label" YName="SecondaryValue"
+                                             Name="Orders" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Column"
+                                             Fill="#f59e0b" ColumnSpacing="0.2">
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-chart col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Top Products (by price)</div>
+                    <div class="dashboard-panel-body">
+                        <SfChart Title="">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category" IsInversed="true"></ChartPrimaryXAxis>
+                            <ChartPrimaryYAxis Title="USD" Format="C0"></ChartPrimaryYAxis>
+                            <ChartTooltipSettings Enable="true" Format="C0" Header="${point.x}"></ChartTooltipSettings>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@_topProducts" XName="Label" YName="Value"
+                                             Name="Price" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Bar"
+                                             Fill="#8b5cf6">
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    </div>
+                </article>
+
+                @* ── Rows 6–7: Top Sellers grid + Recent Activity feed ──────── *@
+                <article class="dashboard-panel dashboard-table col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Top Sellers</div>
+                    <div class="dashboard-panel-body">
+                        <SfGrid DataSource="@_topSellers" AllowSorting="false" AllowPaging="false"
+                                AllowFiltering="false" GridLines="GridLine.None">
+                            <GridColumns>
+                                <GridColumn Field="@nameof(TopSellerRow.Sku)" HeaderText="SKU" Width="100"></GridColumn>
+                                <GridColumn Field="@nameof(TopSellerRow.Name)" HeaderText="Product" Width="150"></GridColumn>
+                                <GridColumn Field="@nameof(TopSellerRow.UnitsSold)" HeaderText="Units" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="70"></GridColumn>
+                                <GridColumn Field="@nameof(TopSellerRow.Revenue)" HeaderText="Revenue" Format="C0" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                <GridColumn HeaderText="Δ" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="80">
+                                    <Template>
+                                        @{
+                                            var row = (context as TopSellerRow)!;
+                                            var cls = row.ChangePercent >= 0 ? "demo-trend-up" : "demo-trend-down";
+                                            var arrow = row.ChangePercent >= 0 ? "▲" : "▼";
+                                        }
+                                        <span class="demo-trend @cls">@arrow @Math.Abs(row.ChangePercent).ToString("0.0")%</span>
+                                    </Template>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                </article>
+
+                <article class="dashboard-panel dashboard-table col-12 col-xl-6">
+                    <div class="dashboard-panel-header">Recent Activity</div>
+                    <div class="dashboard-panel-body">
+                        <ul class="demo-activity-list">
+                            @foreach (var row in _recentActivity)
+                            {
+                                <li class="demo-activity-item">
+                                    <span class="demo-activity-time">@row.Time</span>
+                                    <span class="demo-activity-text">
+                                        <strong>@row.Customer</strong> @row.Action
+                                    </span>
+                                    <span class="demo-activity-amount">@row.Amount.ToString("C0")</span>
+                                    <span class="demo-status demo-status-@row.Status.ToLower()">@row.Status</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </article>
+
+        </section>
+    </div>
+
+@code {
+    private static readonly AnalyticsSummary _summary = new()
+    {
+        TotalRevenue = 284_650m, TotalOrders = 1_342, ActiveUsers = 876, ConversionRatePercent = 3.4,
+        RevenueDeltaPercent = 12.4, OrdersDeltaPercent = 7.1, UsersDeltaPercent = -2.3, ConversionDeltaPercent = 0.6,
+    };
+
+    private static readonly List<ChartPoint> _monthlyRevenue = new()
+    {
+        new() { Label = "Jan", Value = 18200 }, new() { Label = "Feb", Value = 19800 }, new() { Label = "Mar", Value = 21500 },
+        new() { Label = "Apr", Value = 20100 }, new() { Label = "May", Value = 24300 }, new() { Label = "Jun", Value = 26800 },
+        new() { Label = "Jul", Value = 25100 }, new() { Label = "Aug", Value = 27650 }, new() { Label = "Sep", Value = 29200 },
+        new() { Label = "Oct", Value = 31400 }, new() { Label = "Nov", Value = 33800 }, new() { Label = "Dec", Value = 37650 }
+    };
+
+    private static readonly List<ChartPoint> _categoryBreakdown = new()
+    {
+        new() { Label = "Electronics", Value = 46 }, new() { Label = "Furniture", Value = 28 }, new() { Label = "Stationery", Value = 26 }
+    };
+
+    private static readonly List<ChartPoint> _dailyOrders = new()
+    {
+        new() { Label = "Mon", Value = 42 }, new() { Label = "Tue", Value = 51 }, new() { Label = "Wed", Value = 47 },
+        new() { Label = "Thu", Value = 63 }, new() { Label = "Fri", Value = 78 }, new() { Label = "Sat", Value = 95 }, new() { Label = "Sun", Value = 68 }
+    };
+
+    private static readonly List<ChartSeriesPoint> _revenueVsOrders = new()
+    {
+        new() { Label = "Q1", Value = 59500, SecondaryValue = 286 }, new() { Label = "Q2", Value = 71200, SecondaryValue = 332 },
+        new() { Label = "Q3", Value = 79550, SecondaryValue = 381 }, new() { Label = "Q4", Value = 74400, SecondaryValue = 343 }
+    };
+
+    private static readonly List<RankingPoint> _topProducts = new()
+    {
+        new() { Label = "Gaming Laptop 16in", Value = 1899 }, new() { Label = "Ultrabook 14in", Value = 1299 }, new() { Label = "Smartphone X12", Value = 799 },
+        new() { Label = "Standing Desk", Value = 459 }, new() { Label = "Smartphone Lite", Value = 399 }, new() { Label = "Ergonomic Chair", Value = 249 }
+    };
+
+    private static readonly List<TopSellerRow> _topSellers = new()
+    {
+        new() { Sku = "EL-LP-016", Name = "Gaming Laptop 16in", UnitsSold = 184, Revenue = 349416m, ChangePercent = 14.2 },
+        new() { Sku = "EL-LP-014", Name = "Ultrabook 14in", UnitsSold = 162, Revenue = 210438m, ChangePercent = 6.8 },
+        new() { Sku = "EL-PH-X12", Name = "Smartphone X12", UnitsSold = 231, Revenue = 184569m, ChangePercent = 9.5 },
+        new() { Sku = "FU-DK-STD", Name = "Standing Desk", UnitsSold = 97, Revenue = 44523m, ChangePercent = -3.1 },
+        new() { Sku = "FU-CH-ERG", Name = "Ergonomic Chair", UnitsSold = 124, Revenue = 30876m, ChangePercent = 2.4 }
+    };
+
+    private static readonly List<ActivityRow> _recentActivity = new()
+    {
+        new() { Time = "2 min ago", Customer = "Olivia Bennett", Action = "placed order #A-10421", Amount = 1899m, Status = "Completed" },
+        new() { Time = "11 min ago", Customer = "Liam Patel", Action = "paid invoice #INV-7782", Amount = 459m, Status = "Completed" },
+        new() { Time = "27 min ago", Customer = "Sofia Hernandez", Action = "refund requested #R-219", Amount = 249m, Status = "Pending" },
+        new() { Time = "1 hr ago", Customer = "Noah Kim", Action = "subscribed Pro plan", Amount = 99m, Status = "Completed" },
+        new() { Time = "2 hr ago", Customer = "Ava Chen", Action = "placed order #A-10412", Amount = 1799m, Status = "Completed" },
+        new() { Time = "3 hr ago", Customer = "Ethan Wright", Action = "cancelled subscription", Amount = 49m, Status = "Cancelled" },
+        new() { Time = "5 hr ago", Customer = "Mia Johansson", Action = "placed order #A-10388", Amount = 312m, Status = "Completed" }
+    };
+}

@@ -1,0 +1,158 @@
+
+@using MdiWorkbench.Components.Mdi
+
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+@inject MdiWindowManager Manager
+@implements IDisposable
+
+<div class="app-menu-bar">
+    <div class="app-menu-vertical-bar">
+        
+        <button type="button"
+                class="app-menu-toggle-icon @(IsSidebarOpen ? "is-open" : "is-closed")"
+                title="@(IsSidebarOpen ? "Hide sidebar" : "Show sidebar")"
+                aria-label="Toggle sidebar"
+                aria-pressed="@IsSidebarOpen"
+                @onclick="ToggleSidebarAsync">
+            <span class="e-icons e-menu"></span>
+        </button>
+        <span class="app-menu-brand">MDI Workbench</span>
+    </div>
+    <SfMenu TValue="MenuItem" CssClass="app-menu">
+        <MenuItems>
+            <MenuItem Text="File">
+                <MenuItems>
+                    <MenuItem Text="Explorer" IconCss="e-icons e-folder"></MenuItem>
+                    <MenuItem Text="Data Grid" IconCss="e-icons e-grid-view"></MenuItem>
+                    <MenuItem Text="PDF Viewer" IconCss="e-icons e-export-pdf"></MenuItem>
+                    <MenuItem Text="Spreadsheet" IconCss="e-icons e-export-excel"></MenuItem>
+                    <MenuItem Text="Dashboard" IconCss="e-icons e-chart"></MenuItem>
+                    <MenuItem Text="Live Sales Report" IconCss="e-icons e-clock"></MenuItem>
+                </MenuItems>
+            </MenuItem>
+            <MenuItem Text="Window" Items="@_windowMenuItems"></MenuItem>
+            <MenuItem Text="Help">
+                <MenuItems>
+                    <MenuItem Text="About MDI Workbench"></MenuItem>
+                </MenuItems>
+            </MenuItem>
+        </MenuItems>
+        <MenuEvents TValue="MenuItem" ItemSelected="OnMenuItemSelected"></MenuEvents>
+    </SfMenu>
+</div>
+
+<SfDialog Width="380px" Header="About" ShowCloseIcon="true" IsModal="true" @bind-Visible="_showAbout">
+    <DialogTemplates>
+        <Content>
+            <p><strong>MDI Workbench</strong></p>
+            <p>A desktop-style Multiple Document Interface shell built with Syncfusion Blazor
+               components running in Interactive Server render mode. Hosts the following
+               Syncfusion controls inside resizable, minimizable, maximizable MDI windows:</p>
+            <ul>
+                <li>Charts (SfChart, SfAccumulationChart)</li>
+                <li>DataGrid (SfGrid)</li>
+                <li>PDF Viewer (SfPdfViewer2)</li>
+                <li>Spreadsheet (SfSpreadsheet)</li>
+                <li>Layouts (SfSplitter)</li>
+                <li>Navigations (SfMenu, SfTreeView, SfContextMenu)</li>
+                <li>Popups (SfDialog) and Notifications (SfSpinner)</li>
+            </ul>
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+
+@code {
+    [Parameter] public EventCallback OnToggleSidebar { get; set; }
+    [Parameter] public bool IsSidebarOpen { get; set; } = true;
+
+    private List<MenuItem> _windowMenuItems = new();
+    private bool _showAbout;
+
+    private async Task ToggleSidebarAsync()
+    {
+        if (OnToggleSidebar.HasDelegate)
+        {
+            await OnToggleSidebar.InvokeAsync();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        RebuildWindowMenu();
+        Manager.WindowsChanged += OnWindowsChanged;
+    }
+
+    private void RebuildWindowMenu()
+    {
+        var items = new List<MenuItem>
+        {
+            new() { Text = "Cascade" },
+            new() { Text = "Tile" },
+            new() { Text = "Close All" },
+        };
+
+        _windowMenuItems = items;
+    }
+
+    private async void OnWindowsChanged()
+    {
+        RebuildWindowMenu();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnMenuItemSelected(MenuEventArgs<MenuItem> args)
+    {
+        switch (args.Item.Text)
+        {
+            case "Explorer":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Explorer, "Explorer");
+                break;
+            case "Data Grid":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.DataGrid, "Product Catalog");
+                break;
+            case "PDF Viewer":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.PdfViewer, "PDF Viewer");
+                break;
+            case "Spreadsheet":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Spreadsheet, "Spreadsheet");
+                break;
+            case "Dashboard":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.Dashboard, "Sales Dashboard", singleInstance: true);
+                break;
+            case "Live Sales Report":
+                await Manager.OpenWindowWithDelayAsync(MdiDocumentType.LiveSalesReport, "Live Sales Report", singleInstance: true);
+                break;
+            case "Cascade":
+                Manager.CascadeAll();
+                break;
+            case "Tile":
+                Manager.TileAll();
+                break;
+            case "Close All":
+                Manager.CloseAll();
+                break;
+            case "Toggle Sidebar":
+                _ = OnToggleSidebar.InvokeAsync();
+                break;
+            case "Show sidebar":
+            case "Hide sidebar":
+                await  ToggleSidebarAsync();
+                break;
+            case "About MDI Workbench":
+                _showAbout = true;
+                break;
+            default:
+                if (!string.IsNullOrEmpty(args.Item.Url) && Guid.TryParse(args.Item.Url, out var id))
+                {
+                    Manager.Activate(id);
+                }
+                break;
+        }
+    }
+
+    public void Dispose()
+    {
+        Manager.WindowsChanged -= OnWindowsChanged;
+    }
+}

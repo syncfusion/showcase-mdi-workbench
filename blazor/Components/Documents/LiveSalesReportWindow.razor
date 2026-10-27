@@ -1,0 +1,190 @@
+@using MdiWorkbench.Models
+@using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Grids
+@implements IDisposable
+
+@if (_snapshot is null)
+{
+    <div class="document-window document-window-loading">
+        <p>Loading live sales report&hellip;</p>
+    </div>
+}
+else
+{
+    <div class="document-window document-window-live-sales live-sales">
+        <div class="live-sales-header">
+            <div class="live-sales-title">
+                <h2>Live Sales Report</h2>
+                <p>Streaming orders in real time &middot; refreshes every 30 seconds</p>
+            </div>
+            <div class="live-sales-meta">
+                <span class="demo-pill demo-pill-live"><span class="demo-pill-dot"></span>Streaming</span>
+                <span class="demo-meta-time">Updated @_snapshot.CapturedAt.ToString("HH:mm:ss")</span>
+                <button type="button" class="demo-btn demo-btn-refresh"
+                        @onclick="RefreshNowAsync" title="Refresh now"
+                        disabled="@_isRefreshing">
+                    <span class="e-icons e-refresh"></span>
+                </button>
+            </div>
+        </div>
+
+        <section class="live-sales-grid row g-3" aria-label="Live sales report data">
+
+                @* ── Chart panel: spans the full top row ──────────────────── *@
+                <article class="dashboard-panel dashboard-chart col-12">
+                    <div class="dashboard-panel-header">Orders per minute (last 30 min)</div>
+                    <div class="dashboard-panel-body">
+                        <SfChart @ref="_ordersChart" Title="">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                                                Interval="5"></ChartPrimaryXAxis>
+                            <ChartPrimaryYAxis Title="Orders"></ChartPrimaryYAxis>
+                            <ChartTooltipSettings Enable="true" Shared="false"></ChartTooltipSettings>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="@_snapshot.OrdersPerMinute"
+                                             XName="MinuteLabel" YName="Orders"
+                                             Name="Orders / min"
+                                             Type="Syncfusion.Blazor.Charts.ChartSeriesType.Line"
+                                             Fill="#22c55e" Width="2">
+                                    <ChartMarker Visible="true" Width="6" Height="6" Fill="#22c55e"></ChartMarker>
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    </div>
+                </article>
+
+                @* ── Grid panel: spans the full bottom row ─────────────────── *@
+                <article class="dashboard-panel dashboard-table col-12">
+                    <div class="dashboard-panel-header">Latest orders</div>
+                    <div class="dashboard-panel-body">
+                        <SfGrid @key="_snapshot.CapturedAt" DataSource="@_snapshot.LatestOrders"
+                                AllowSorting="true" AllowPaging="false" AllowFiltering="false"
+                                GridLines="GridLine.None">
+                            <GridColumns>
+                                <GridColumn Field="@nameof(LiveOrderRow.OrderId)" HeaderText="Order" Width="100"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.PlacedAt)" HeaderText="Placed"
+                                            Format="HH:mm:ss" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Center" Width="90"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.Customer)" HeaderText="Customer" Width="160"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.Product)" HeaderText="Product" Width="170"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.Quantity)" HeaderText="Qty"
+                                            TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="60"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.Amount)" HeaderText="Amount" Format="C2"
+                                            TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                <GridColumn Field="@nameof(LiveOrderRow.Channel)" HeaderText="Channel" Width="90"></GridColumn>
+                                <GridColumn HeaderText="Status" Width="110">
+                                    <Template>
+                                        @{
+                                            var row = (context as LiveOrderRow)!;
+                                        }
+                                        <span class="demo-status demo-status-@row.Status.ToLower()">@row.Status</span>
+                                    </Template>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                </article>
+
+        </section>
+    </div>
+}
+
+@code {
+    private static readonly LiveSalesSnapshot StaticSnapshot = CreateStaticSnapshot();
+    private LiveSalesSnapshot _snapshot = StaticSnapshot;
+    private bool _isRefreshing;
+    private SfChart? _ordersChart;
+    private readonly CancellationTokenSource _refreshCancellation = new();
+    private Task? _refreshLoop;
+
+    protected override void OnInitialized()
+    {
+        _refreshLoop = RefreshEveryThirtySecondsAsync(_refreshCancellation.Token);
+    }
+
+    private async Task RefreshNowAsync()
+    {
+        if (_isRefreshing) return;
+        _isRefreshing = true;
+        try
+        {
+            await RefreshDataAsync();
+        }
+        finally
+        {
+            _isRefreshing = false;
+        }
+    }
+
+    private async Task RefreshEveryThirtySecondsAsync(CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(30));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (!_isRefreshing)
+                {
+                    await RefreshDataAsync();
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when the MDI window is closed.
+        }
+
+    }
+
+    private async Task RefreshDataAsync()
+    {
+        _isRefreshing = true;
+        try
+        {
+            _snapshot = CreateStaticSnapshot(DateTime.Now);
+            await InvokeAsync(StateHasChanged);
+            if (_ordersChart is not null)
+            {
+                await _ordersChart.RefreshAsync(false);
+            }
+        }
+        finally
+        {
+            _isRefreshing = false;
+        }
+    }
+
+    private static LiveSalesSnapshot CreateStaticSnapshot(DateTime? timestamp = null)
+    {
+        var capturedAt = timestamp ?? new DateTime(2026, 9, 3, 10, 30, 0);
+        var chart = new List<LiveOrdersPoint>();
+        for (var offset = 29; offset >= 0; offset--)
+        {
+            chart.Add(new LiveOrdersPoint
+            {
+                MinuteLabel = capturedAt.AddMinutes(-offset).ToString("HH:mm"),
+                Orders = Random.Shared.Next(8, 38)
+            });
+        }
+
+        var products = new[] { "Gaming Laptop 16in", "Ultrabook 14in", "Smartphone X12", "Standing Desk", "Ergonomic Chair" };
+        var customers = new[] { "Olivia Bennett", "Liam Patel", "Sofia Hernandez", "Noah Kim", "Ava Chen" };
+        var rows = Enumerable.Range(0, 20).Select(index => new LiveOrderRow
+        {
+            OrderId = $"A-{Random.Shared.Next(10000, 99999):D5}",
+            PlacedAt = capturedAt.AddSeconds(-Random.Shared.Next(0, 1800)),
+            Customer = customers[Random.Shared.Next(customers.Length)],
+            Product = products[Random.Shared.Next(products.Length)],
+            Quantity = Random.Shared.Next(1, 6),
+            Amount = Random.Shared.Next(75, 2400),
+            Channel = new[] { "Web", "Mobile", "In-Store", "Partner" }[Random.Shared.Next(4)],
+            Status = new[] { "Completed", "Completed", "Processing", "Pending" }[Random.Shared.Next(4)]
+        }).ToList();
+
+        return new LiveSalesSnapshot { OrdersPerMinute = chart, LatestOrders = rows, CapturedAt = capturedAt };
+    }
+
+    public void Dispose()
+    {
+        _refreshCancellation.Cancel();
+        _refreshCancellation.Dispose();
+    }
+}

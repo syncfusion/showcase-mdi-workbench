@@ -1,0 +1,25 @@
+@page "/ss"
+@using Syncfusion.Blazor.SfPdfViewer
+@rendermode InteractiveServer
+
+<div class="document-window document-window-pdf">
+    <SfPdfViewer2 DocumentPath="@DefaultDocumentPath"
+                  Height="100%"
+                  Width="100%">
+    </SfPdfViewer2>
+</div>
+
+@code {
+
+    private string DefaultDocumentPath { get; set; } = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Sets the PDF document path for initial loading.
+        DefaultDocumentPath = "https://cdn.syncfusion.com/content/pdf/pdf-succinctly.pdf";
+
+        await Task.CompletedTask;
+    }
+
+}

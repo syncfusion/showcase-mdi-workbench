@@ -1,0 +1,1190 @@
+html,
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a,
+.btn-link {
+    color: #006bb7;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+h1:focus {
+    outline: none;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid #e50000;
+}
+
+.validation-message {
+    color: #e50000;
+}
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
+
+.darker-border-checkbox.form-check-input {
+    border-color: #929292;
+}
+
+.form-floating>.form-control-plaintext::placeholder,
+.form-floating>.form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating>.form-control-plaintext:focus::placeholder,
+.form-floating>.form-control:focus::placeholder {
+    text-align: start;
+}
+
+/* ==========================================================================
+   MDI Workbench shell
+   ========================================================================== */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+#app {
+    height: 100vh;
+}
+
+.workbench-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.workbench-body {
+    flex: 1 1 auto;
+    display: flex;
+    min-height: 0;
+    position: relative;
+}
+
+.workbench-sidebar-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 8px 4px;
+}
+
+/* SfSidebar defaults to position:fixed relative to the viewport, which would draw it over
+   the app menu bar above. Constrain it to the workbench-body flex container instead so it
+   starts below the menu bar and only spans the remaining height. */
+.workbench-body .e-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    height: 100% !important;
+}
+
+.workbench-main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: #f3f4f6;
+}
+
+.workbench-workspace-area {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* App menu bar */
+
+.app-menu-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    background: #175cd3;
+    color: #fff;
+    box-shadow: 0 1px 3px rgb(16 24 40 / 12%);
+    border-bottom: 1px solid #1248a8;
+    flex-shrink: 0;
+    min-height: 44px;
+}
+
+/* Left "brand + icon" section. The icon sits *after* the text horizontally
+   (inline-flex), so the visual order is: [MDI Workbench] [icon]. */
+.app-menu-vertical-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 0 14px;
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.app-menu-brand {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: 0.92rem;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar toggle. Rounded rectangle so the control reads as a button on the
+   bar, using the same blue and light-blue surfaces as the taskbar chips. */
+.app-menu-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 70%);
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.app-menu-toggle-icon .e-icons {
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+}
+
+.app-menu-toggle-icon:hover {
+    background: #fff;
+    color: #175cd3;
+    border-color: #fff;
+}
+
+.app-menu-toggle-icon:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.app-menu-toggle-icon:active {
+    background: #d6e4ff;
+    color: #1b3a6b;
+    border-color: #d6e4ff;
+}
+
+/* Sidebar hidden: the same light chip treatment, so the control stays on the app blue. */
+.app-menu-toggle-icon.is-closed {
+    background: #fff;
+    color: #175cd3;
+    border-color: #fff;
+}
+
+.app-menu-toggle-icon.is-closed:hover {
+    background: #eef4ff;
+    color: #175cd3;
+    border-color: #eef4ff;
+}
+
+.app-menu-toggle-icon.is-closed:active {
+    background: #d6e4ff;
+    color: #1b3a6b;
+    border-color: #d6e4ff;
+}
+
+/* The horizontal SfMenu must stretch to fill the remaining width.
+   Blazor renders the root as .e-menu-container; the theme also styles .e-menu-wrapper. */
+.app-menu-bar>.e-menu-wrapper,
+.app-menu-bar>.e-menu-container,
+.app-menu-bar>.app-menu,
+.app-menu-bar>ul.e-menu,
+.app-menu-bar>ul {
+    flex: 1 1 auto;
+}
+
+/* material3.css sets .e-menu and .e-menu-url to on-surface (near-black) and
+   .e-caret to on-surface-variant. These selectors include the Blazor root
+   (.e-menu-container.app-menu) and outrank those rules. Labels and the caret
+   stay white on the #175cd3 bar, including hover, focus, and the open item. */
+
+.app-menu-bar .e-menu-wrapper,
+.app-menu-bar .e-menu-container,
+.app-menu-bar .app-menu,
+.app-menu-bar .e-menu-wrapper .e-menu,
+.app-menu-bar .e-menu-container .e-menu,
+.app-menu-bar .app-menu .e-menu {
+    background: transparent;
+    color: #fff;
+}
+
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item,
+.app-menu-bar .app-menu .e-menu .e-menu-item,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item .e-menu-url,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item .e-menu-url,
+.app-menu-bar .app-menu .e-menu .e-menu-item .e-menu-url,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item .e-caret,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item .e-menu-icon,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item .e-menu-icon,
+.app-menu-bar .app-menu .e-menu .e-menu-item .e-menu-icon {
+    color: #fff;
+}
+
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:hover,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:hover,
+.app-menu-bar .app-menu .e-menu .e-menu-item:hover,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-focused,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-focused,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-focused,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:focus,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:focus,
+.app-menu-bar .app-menu .e-menu .e-menu-item:focus,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:focus-visible,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:focus-visible,
+.app-menu-bar .app-menu .e-menu .e-menu-item:focus-visible {
+    background: rgb(255 255 255 / 16%);
+    color: #fff;
+    outline: none;
+}
+
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-selected,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-selected,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-selected,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-active-item,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-active-item,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-active-item,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:active,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:active,
+.app-menu-bar .app-menu .e-menu .e-menu-item:active {
+    background: #1248a8;
+    color: #fff;
+    outline: none;
+}
+
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:hover .e-menu-url,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:hover .e-menu-url,
+.app-menu-bar .app-menu .e-menu .e-menu-item:hover .e-menu-url,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:hover .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:hover .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item:hover .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:hover .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:hover .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item:hover .e-caret,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:hover .e-menu-icon,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:hover .e-menu-icon,
+.app-menu-bar .app-menu .e-menu .e-menu-item:hover .e-menu-icon,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-focused .e-menu-url,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-focused .e-menu-url,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-focused .e-menu-url,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-focused .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-focused .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-focused .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-focused .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-focused .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-focused .e-caret,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-focused .e-menu-icon,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-focused .e-menu-icon,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-focused .e-menu-icon,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-selected .e-menu-url,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-selected .e-menu-url,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-selected .e-menu-url,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-selected .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-selected .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-selected .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-selected .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-selected .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-selected .e-caret,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-selected .e-menu-icon,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-selected .e-menu-icon,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-selected .e-menu-icon,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-active-item .e-menu-url,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-active-item .e-menu-url,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-active-item .e-menu-url,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-active-item .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-active-item .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-active-item .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-active-item .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-active-item .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-active-item .e-caret,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item.e-active-item .e-menu-icon,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item.e-active-item .e-menu-icon,
+.app-menu-bar .app-menu .e-menu .e-menu-item.e-active-item .e-menu-icon,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:active .e-menu-text,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:active .e-menu-text,
+.app-menu-bar .app-menu .e-menu .e-menu-item:active .e-menu-text,
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:active .e-caret,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:active .e-caret,
+.app-menu-bar .app-menu .e-menu .e-menu-item:active .e-caret {
+    color: #fff;
+}
+
+.app-menu-bar .e-menu-wrapper .e-menu .e-menu-item:focus-visible,
+.app-menu-bar .e-menu-container .e-menu .e-menu-item:focus-visible,
+.app-menu-bar .app-menu .e-menu .e-menu-item:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+}
+
+/* Submenus open as overlay popups (.e-menu-popup) on the theme's white
+   surface, so the white top-bar text/caret above must NOT apply inside them.
+   Restore the theme's dark label/caret colors and normal hover treatment. */
+.app-menu-bar .e-menu-popup,
+.app-menu-bar .e-menu-popup .e-menu {
+    background: #fff;
+}
+
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item .e-menu-icon {
+    color: #333;
+}
+
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item .e-caret {
+    color: #6b7280;
+}
+
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:hover,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-focused,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:focus,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:focus-visible,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-selected,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-active-item,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:active {
+    background: rgb(16 24 40 / 8%);
+    color: #333;
+    outline: none;
+}
+
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:hover .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-focused .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-selected .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-active-item .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:active .e-menu-url,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:hover .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-focused .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-selected .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-active-item .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:active .e-menu-text,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:hover .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-focused .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-selected .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-active-item .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:active .e-caret,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:hover .e-menu-icon,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-focused .e-menu-icon,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-selected .e-menu-icon,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item.e-active-item .e-menu-icon,
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:active .e-menu-icon {
+    color: #333;
+}
+
+.app-menu-bar .e-menu-popup .e-menu .e-menu-item:focus-visible {
+    outline: 2px solid #175cd3;
+    outline-offset: -2px;
+}
+
+/* MDI workspace + windows */
+
+.mdi-workspace {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 24px 24px;
+}
+
+.mdi-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(243, 244, 246, 0.72);
+    pointer-events: all;
+}
+
+.mdi-window .e-dlg-header-content {
+    padding: 0 !important;
+}
+
+
+
+.mdi-window-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 6px 8px;
+    cursor: move;
+    user-select: none;
+}
+
+.mdi-window-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mdi-window-controls {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.mdi-window-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    width: 26px;
+    height: 22px;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 3px;
+    color: #344054;
+}
+
+.mdi-window-btn .e-icons {
+    font-size: 14px;
+    line-height: 1;
+    color: inherit;
+}
+
+.mdi-window-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.mdi-window-btn-close:hover {
+    background: #e53935;
+    color: #fff;
+}
+
+.mdi-window-content {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Dialogs whose content should scroll vertically when the hosted document is taller than the
+   window. Set on MdiWindow.razor per document type via .mdi-window-content-{DocumentType}. */
+.mdi-window-content-dashboard {
+    overflow: auto;
+}
+
+.mdi-window-content-dashboard::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.mdi-window-content-dashboard::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.mdi-window-content-dashboard::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Document windows */
+
+.document-window {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.document-window-loading {
+    padding: 16px;
+    color: #666;
+}
+
+.document-window-explorer,
+.document-window-pdf,
+.document-window-spreadsheet,
+.document-window-dashboard {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.document-window-dashboard {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.document-window-dashboard>.e-dashboardlayout {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+
+.dashboard-grid {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+    flex: 1 0 auto;
+    margin-top: 0;
+    padding: 3px 0.55rem 1rem;
+}
+
+.dashboard-panel {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.dashboard-panel-header {
+    flex: 0 0 auto;
+    padding: 0.7rem 0.85rem 0.45rem;
+    border-bottom: 1px solid #eef2f7;
+    color: #334155;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.dashboard-panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0.5rem;
+    overflow: hidden;
+}
+
+.dashboard-kpi {
+    min-height: 150px;
+}
+
+.dashboard-chart {
+    min-height: 320px;
+}
+
+.dashboard-pie {
+    min-height: 300px;
+}
+
+.dashboard-table {
+    min-height: 330px;
+}
+
+.dashboard-panel-body>.e-control,
+.dashboard-panel-body>.e-grid,
+.dashboard-panel-body>.e-chart,
+.dashboard-panel-body>.e-accumulationchart {
+    width: 100%;
+    max-width: 100%;
+}
+
+.dashboard-chart .dashboard-panel-body,
+.dashboard-pie .dashboard-panel-body {
+    height: 260px;
+}
+
+.dashboard-panel-body>.e-chart,
+.dashboard-panel-body>.e-accumulationchart {
+    height: 100% !important;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.dashboard-panel-body>.e-accumulationchart svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.dashboard-table .dashboard-panel-body {
+    overflow: auto;
+}
+
+@media (max-width: 575.98px) {
+    .document-window-dashboard {
+        padding: 0.75rem;
+    }
+
+    .dashboard-grid {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+        padding-inline: 0;
+    }
+}
+
+/* Live Sales document also gets a scrollable content area so the long grid is reachable
+   in any sized window. */
+.mdi-window-content-livesalesreport {
+    overflow: auto;
+}
+
+.mdi-window-content-livesalesreport::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.mdi-window-content-livesalesreport::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.mdi-window-content-livesalesreport::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    padding-top: 8px;
+}
+
+.kpi-sub {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   Demo dashboard
+   Real-demo style layout: header, KPI row, chart grid, activity feed, etc.
+   ========================================================================== */
+
+.demo-dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    color: #0f172a;
+    padding: 16px 18px;
+    gap: 14px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.demo-dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.demo-dashboard-title h2 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.demo-dashboard-title p {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+.demo-dashboard-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.demo-meta-time {
+    font-size: 0.78rem;
+    color: #475569;
+    font-variant-numeric: tabular-nums;
+}
+
+.demo-btn {
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #0f172a;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    line-height: 1;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.demo-btn:hover {
+    background: #f1f5f9;
+}
+
+.demo-btn-refresh {
+    width: 28px;
+    padding: 0;
+}
+
+.demo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.demo-pill-streaming {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.demo-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 0 currentColor;
+    animation: demo-pulse 1.6s infinite;
+}
+
+@keyframes demo-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+.demo-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.demo-kpi {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+}
+
+.demo-kpi::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--accent, #5b8def);
+}
+
+.demo-kpi-revenue {
+    --accent: #5b8def;
+}
+
+.demo-kpi-orders {
+    --accent: #22c55e;
+}
+
+.demo-kpi-users {
+    --accent: #f59e0b;
+}
+
+.demo-kpi-conversion {
+    --accent: #8b5cf6;
+}
+
+.demo-kpi-label {
+    font-size: 0.72rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+.demo-kpi-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin-top: 4px;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+}
+
+.demo-kpi-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.demo-trend {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.demo-trend-up {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.demo-trend-down {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.demo-kpi-sub {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.demo-card {
+    grid-column: span 6;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.demo-card-large {
+    grid-column: span 6;
+}
+
+.demo-card-pie {
+    grid-column: span 4;
+}
+
+.demo-card-table {
+    grid-column: span 6;
+}
+
+.demo-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px 4px;
+}
+
+.demo-card-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.demo-card-header p {
+    margin: 2px 0 0;
+    font-size: 0.74rem;
+    color: #64748b;
+}
+
+.demo-card-chip {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.demo-card-chip-green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.demo-card-body {
+    padding: 4px 8px 10px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.demo-card-body .e-grid {
+    border: none;
+}
+
+.demo-card-body .e-grid .e-headercell {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.demo-card-body .e-grid .e-rowcell {
+    font-size: 0.82rem;
+}
+
+.demo-activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.demo-activity-item {
+    display: grid;
+    grid-template-columns: 88px 1fr 100px 90px;
+    gap: 10px;
+    padding: 8px 12px;
+    align-items: center;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.demo-activity-item:last-child {
+    border-bottom: none;
+}
+
+.demo-activity-time {
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+}
+
+.demo-activity-text {
+    color: #1e293b;
+}
+
+.demo-activity-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+.demo-status {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 999px;
+    text-align: center;
+}
+
+.demo-status-completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.demo-status-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.demo-status-processing {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.demo-status-cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+@media (max-width: 1100px) {
+    .demo-kpi-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .demo-card-large,
+    .demo-card-pie,
+    .demo-card-table {
+        grid-column: span 12;
+    }
+}
+
+/* ==========================================================================
+   Live Sales Report window
+   ========================================================================== */
+
+.live-sales {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    color: #0f172a;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.live-sales-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.live-sales-title h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.live-sales-title p {
+    margin: 1px 0 0;
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.live-sales-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.live-sales .demo-card {
+    grid-column: auto;
+}
+
+.live-sales-chart {
+    flex: 0 0 auto;
+}
+
+.live-sales-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-content: flex-start;
+    margin-inline: 0;
+}
+
+.live-sales-grid .demo-card-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Spin animation for refresh button while a manual or auto refresh is in flight. */
+@keyframes demo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.demo-spin {
+    animation: demo-spin 1s linear infinite;
+}
+
+/* Taskbar */
+
+.mdi-taskbar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    color: #172033;
+    min-height: 40px;
+    overflow-x: auto;
+    border-top: 1px solid #e5e9f0;
+    box-shadow: 0 -1px 3px rgb(16 24 40 / 6%);
+}
+
+.mdi-taskbar-label {
+    font-size: 0.8rem;
+    color: #667085;
+    flex-shrink: 0;
+}
+
+.mdi-taskbar-empty {
+    font-size: 0.8rem;
+    color: #98a2b3;
+}
+
+.mdi-taskbar-chip {
+    border: 1px solid #d6e4ff;
+    background: #eef4ff;
+    color: #175cd3;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.mdi-taskbar-chip:hover {
+    background: #d6e4ff;
+    border-color: #84adff;
+}
+
+
+
+.mdi-taskbar-chip:focus-visible {
+    outline: 2px solid #175cd3;
+    outline-offset: 2px;
+}
+
+.mdi-taskbar-chip-minimized {
+    background: #f6f8fb;
+    border-color: #e5e9f0;
+    color: #667085;
+    font-weight: 500;
+}
+
+.mdi-taskbar-chip-minimized:hover {
+    background: #eef2f6;
+    color: #344054;
+}

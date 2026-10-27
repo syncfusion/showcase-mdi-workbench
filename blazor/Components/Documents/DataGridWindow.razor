@@ -1,0 +1,71 @@
+@using MdiWorkbench.Models
+@using Syncfusion.Blazor.Grids
+@inject IProductDataService ProductDataService
+
+<div class="document-window">
+    @if (_products is null)
+    {
+        <p class="document-window-loading">Loading products&hellip;</p>
+    }
+    else
+    {
+        <SfGrid DataSource="@_products" AllowSorting="true" AllowFiltering="true" AllowPaging="true"
+                Toolbar="@(new List<string> { "Add", "Edit", "Delete", "Update", "Cancel", "Search" })">
+            <GridPageSettings PageSize="10"></GridPageSettings>
+            <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.FilterBar"></GridFilterSettings>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true"
+                              Mode="EditMode.Normal" ShowDeleteConfirmDialog="true">
+            </GridEditSettings>
+            <GridEvents TValue="Product" RowCreated="OnRowCreated" RowUpdated="OnRowUpdated" RowDeleted="OnRowDeleted">
+            </GridEvents>
+            <GridColumns>
+                <GridColumn Field="@nameof(Product.Id)" HeaderText="Id" IsPrimaryKey="true" IsIdentity="true" Width="70"></GridColumn>
+                <GridColumn Field="@nameof(Product.Name)" HeaderText="Name" Width="180"></GridColumn>
+                <GridColumn Field="@nameof(Product.Category)" HeaderText="Category" Width="130"></GridColumn>
+                <GridColumn Field="@nameof(Product.Price)" HeaderText="Price" Format="C2" EditType="EditType.NumericEdit" Width="110"></GridColumn>
+                <GridColumn Field="@nameof(Product.Stock)" HeaderText="Stock" EditType="EditType.NumericEdit" Width="90"></GridColumn>
+                <GridColumn Field="@nameof(Product.UpdatedOn)" HeaderText="Updated" Format="d" EditType="EditType.DatePickerEdit" Width="120"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    }
+</div>
+
+@code {
+    [Parameter] public string? CategoryKey { get; set; }
+
+    private List<Product>? _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await ProductDataService.GetProductsAsync(CategoryKey);
+    }
+
+    private async void OnRowCreated(RowCreatedEventArgs<Product> args)
+    {
+        if (args.Data is not null)
+        {
+            await ProductDataService.CreateAsync(args.Data);
+        }
+    }
+
+    private async void OnRowUpdated(RowUpdatedEventArgs<Product> args)
+    {
+        if (args.Data is not null)
+        {
+            await ProductDataService.UpdateAsync(args.Data);
+        }
+    }
+
+    private async void OnRowDeleted(RowDeletedEventArgs<Product> args)
+    {
+        if (args.Datas is null)
+        {
+            return;
+        }
+
+        foreach (var deleted in args.Datas)
+        {
+            await ProductDataService.DeleteAsync(deleted.Id);
+        }
+    }
+}

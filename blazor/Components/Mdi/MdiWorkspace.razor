@@ -1,0 +1,133 @@
+
+@using Microsoft.JSInterop
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Spinner
+@inject MdiWindowManager Manager
+@inject IJSRuntime JsRuntime
+@implements IAsyncDisposable
+
+<div id="mdi-workspace" class="mdi-workspace">
+    @foreach (var window in Manager.Windows)
+    {
+        <MdiWindow @key="window.Id" Window="window" Manager="Manager" />
+    }
+</div>
+
+@if (Manager.IsOpeningWindow)
+{
+    <div class="mdi-loading-overlay" aria-live="polite" aria-label="Opening">
+        <SfSpinner Visible="true" Label="Opening..."></SfSpinner>
+    </div>
+}
+
+<SfContextMenu Target="#mdi-workspace" TValue="MenuItem">
+    <MenuItems>
+        <MenuItem Text="Cascade"></MenuItem>
+        <MenuItem Text="Tile"></MenuItem>
+        <MenuItem Separator="true"></MenuItem>
+        <MenuItem Text="Close All"></MenuItem>
+    </MenuItems>
+    <MenuEvents TValue="MenuItem" ItemSelected="OnContextMenuSelected"></MenuEvents>
+</SfContextMenu>
+
+@code {
+    private DotNetObjectReference<MdiWorkspace>? _selfRef;
+    private IJSObjectReference? _viewportObserver;
+
+    protected override void OnInitialized()
+    {
+        Manager.WindowsChanged += OnWindowsChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RefreshViewportSizeAsync();
+
+            _selfRef = DotNetObjectReference.Create(this);
+            try
+            {
+                _viewportObserver = await JsRuntime.InvokeAsync<IJSObjectReference>(
+                    "mdiWorkspace.observeViewportSize", "mdi-workspace", _selfRef);
+            }
+            catch (JSException)
+            {
+                // Browser may not support ResizeObserver; fall back to manual refreshes.
+            }
+        }
+    }
+
+    /// <summary>Invoked from JS when the workspace container resizes.</summary>
+    [JSInvokable]
+    public Task OnViewportResizedAsync(int width, int height)
+    {
+        if (width > 0 && height > 0)
+        {
+            Manager.ViewportWidth = width;
+            Manager.ViewportHeight = height;
+        }
+        return Task.CompletedTask;
+    }
+
+    public async Task RefreshViewportSizeAsync()
+    {
+        try
+        {
+            var size = await JsRuntime.InvokeAsync<WorkspaceSize>("mdiWorkspace.getSize", "mdi-workspace");
+            if (size.Width > 0 && size.Height > 0)
+            {
+                Manager.ViewportWidth = size.Width;
+                Manager.ViewportHeight = size.Height;
+            }
+        }
+        catch (JSException)
+        {
+            // Keep the previous/default viewport size if the DOM query fails for any reason.
+        }
+    }
+
+    private async void OnContextMenuSelected(MenuEventArgs<MenuItem> args)
+    {
+        await RefreshViewportSizeAsync();
+        switch (args.Item.Text)
+        {
+            case "Cascade":
+                Manager.CascadeAll();
+                break;
+            case "Tile":
+                Manager.TileAll();
+                break;
+            case "Close All":
+                Manager.CloseAll();
+                break;
+        }
+    }
+
+    private async void OnWindowsChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private record WorkspaceSize(double Width, double Height);
+
+    public async ValueTask DisposeAsync()
+    {
+        Manager.WindowsChanged -= OnWindowsChanged;
+
+        if (_viewportObserver is not null)
+        {
+            try
+            {
+                await _viewportObserver.InvokeVoidAsync("dispose");
+            }
+            catch (JSException)
+            {
+                // Best-effort dispose.
+            }
+        }
+
+        _selfRef?.Dispose();
+    }
+}
